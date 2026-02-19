@@ -1,0 +1,8 @@
+{
+  "name": "Emeryc Djomo Portfolio",
+  "description": "A high-end, professional portfolio for Emeryc Djomo, a Junior Full Stack Web Developer, featuring a modern UI, project showcases, and an AI-powered assistant.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
