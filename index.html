@@ -11,13 +11,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script>
-        // Force dark mode by default unless 'light' is explicitly saved in localStorage
-        if (localStorage.getItem('theme') === 'light') {
-            document.documentElement.classList.remove('dark');
-        } else {
-            document.documentElement.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
-        }
+        // Force dark mode on first paint.
+        // Users can still toggle to light mode afterward from the UI.
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
 
         tailwind.config = {
             darkMode: 'class',
@@ -68,11 +65,21 @@
         }
     </script>
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         body {
             @apply transition-colors duration-300;
             background-color: #f8fafc;
             color: #0f172a;
-            scroll-behavior: smooth;
+        }
+        section[id] {
+            scroll-margin-top: 110px;
+        }
+        @media (max-width: 768px) {
+            section[id] {
+                scroll-margin-top: 88px;
+            }
         }
         .dark body {
             background-color: #0f172a;

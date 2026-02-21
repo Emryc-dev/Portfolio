@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -9,7 +9,7 @@ const Navbar: React.FC = () => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
-    
+
     if (document.documentElement.classList.contains('dark')) {
       setTheme('dark');
     } else {
@@ -37,8 +37,8 @@ const Navbar: React.FC = () => {
   };
 
   const navLinks = [
-    { name: 'Ã€ propos', href: '#about' },
-    { name: 'CompÃ©tences', href: '#skills' },
+    { name: 'À propos', href: '#about' },
+    { name: 'Compétences', href: '#skills' },
     { name: 'Projets', href: '#projects' },
     { name: 'Services', href: '#services' },
     { name: 'Contact', href: '#contact' },
@@ -56,16 +56,16 @@ const Navbar: React.FC = () => {
 
         <div className="hidden md:flex space-x-8 items-center">
           {navLinks.map((link) => (
-            <a 
-              key={link.name} 
-              href={link.href} 
+            <a
+              key={link.name}
+              href={link.href}
               className="text-sm font-medium dark:text-slate-300 dark:hover:text-primary-500 text-slate-600 hover:text-primary-600 transition-colors uppercase tracking-widest"
             >
               {link.name}
             </a>
           ))}
-          
-          <button 
+
+          <button
             onClick={toggleTheme}
             className="p-2 rounded-xl glass hover:bg-primary-500/10 transition-colors"
             aria-label="Toggle Theme"
@@ -77,8 +77,8 @@ const Navbar: React.FC = () => {
             )}
           </button>
 
-          <a 
-            href="#contact" 
+          <a
+            href="#contact"
             className="px-5 py-2 rounded-full bg-primary-600 hover:bg-primary-700 text-white text-sm font-bold transition-all shadow-lg shadow-primary-500/20 active:scale-95"
           >
             Hire Me

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { PROJECTS } from '../constants';
 
 const Projects: React.FC = () => {
@@ -11,23 +12,65 @@ const Projects: React.FC = () => {
 
   type FilterValue = typeof filters[number]['value'];
   const [filter, setFilter] = useState<FilterValue>('all');
+  const [activeImageByProject, setActiveImageByProject] = useState<Record<string, number>>({});
 
   const filteredProjects = filter === 'all'
     ? PROJECTS
     : PROJECTS.filter((p) => p.category.trim().toLowerCase() === filter.toLowerCase());
 
+  const getProjectImages = (project: typeof PROJECTS[0]) => {
+    if (!project.galleryUrls || project.galleryUrls.length === 0) {
+      return [project.imageUrl];
+    }
+    return project.galleryUrls;
+  };
+
+  const getCurrentImage = (project: typeof PROJECTS[0]) => {
+    const images = getProjectImages(project);
+    const index = activeImageByProject[project.id] ?? 0;
+    return images[index] ?? images[0];
+  };
+
+  const shiftImage = (projectId: string, total: number, direction: -1 | 1) => {
+    setActiveImageByProject((prev) => {
+      const current = prev[projectId] ?? 0;
+      const next = (current + direction + total) % total;
+      return { ...prev, [projectId]: next };
+    });
+  };
+
+  useEffect(() => {
+    const projectsWithGallery = PROJECTS.filter((project) => getProjectImages(project).length > 1);
+    if (projectsWithGallery.length === 0) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setActiveImageByProject((prev) => {
+        const nextState = { ...prev };
+        projectsWithGallery.forEach((project) => {
+          const total = getProjectImages(project).length;
+          const current = prev[project.id] ?? 0;
+          nextState[project.id] = (current + 1) % total;
+        });
+        return nextState;
+      });
+    }, 3000);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
   const renderButtons = (project: typeof PROJECTS[0]) => {
-    // Special case for CreatorOS - Coming Soon
     if (project.id === 'creatoros') {
       return (
         <div className="flex gap-4 pt-4">
-          <button 
+          <button
             className="flex-1 flex justify-center items-center px-4 py-2.5 rounded-xl bg-slate-400 dark:bg-slate-600 text-white dark:text-slate-200 font-bold text-sm cursor-not-allowed opacity-60"
             title="Coming Soon"
           >
             Coming Soon
           </button>
-          <button 
+          <button
             className="p-2.5 rounded-xl glass text-slate-400 dark:text-slate-500 cursor-not-allowed opacity-40 border dark:border-slate-600 border-slate-300"
             title="Coming Soon"
             disabled
@@ -38,16 +81,35 @@ const Projects: React.FC = () => {
       );
     }
 
+    if (!project.githubUrl || project.githubUrl === '#') {
+      return (
+        <div className="pt-4">
+          <a
+            href={project.liveUrl}
+            className="w-full flex justify-center items-center px-4 py-2.5 rounded-xl bg-primary-600 dark:bg-white text-white dark:text-dark font-bold text-sm hover:bg-primary-700 dark:hover:bg-primary-50 transition-all duration-300 transform hover:scale-[1.02] active:scale-95 shadow-md hover:shadow-primary-500/40"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Voir la maquette
+          </a>
+        </div>
+      );
+    }
+
     return (
       <div className="flex gap-4 pt-4">
-        <a 
-          href={project.liveUrl} 
+        <a
+          href={project.liveUrl}
+          target="_blank"
+          rel="noreferrer"
           className="flex-1 flex justify-center items-center px-4 py-2.5 rounded-xl bg-primary-600 dark:bg-white text-white dark:text-dark font-bold text-sm hover:bg-primary-700 dark:hover:bg-primary-50 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-primary-500/40"
         >
           Voir le site
         </a>
-        <a 
-          href={project.githubUrl} 
+        <a
+          href={project.githubUrl}
+          target="_blank"
+          rel="noreferrer"
           className="p-2.5 rounded-xl glass dark:hover:bg-white/10 hover:bg-slate-200 text-slate-700 dark:text-white transition-all duration-300 transform hover:rotate-12 border dark:border-white/5 border-slate-200"
           title="Voir le code"
         >
@@ -61,13 +123,24 @@ const Projects: React.FC = () => {
     <section id="projects" className="py-24 transition-colors duration-300 dark:bg-dark bg-slate-50">
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-          <div className="reveal">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+          >
             <h2 className="text-3xl md:text-4xl font-bold mb-4 dark:text-white text-dark">Projets Récents</h2>
             <p className="dark:text-slate-400 text-slate-600 max-w-xl">Sélection de réalisations mettant en avant mes capacités d'analyse et de développement Full Stack.</p>
-          </div>
-          <div className="reveal flex space-x-2 bg-slate-200/50 dark:bg-slate-800/50 p-1.5 rounded-xl glass border-none [transition-delay:100ms]">
+          </motion.div>
+          <motion.div
+            className="flex space-x-2 bg-slate-200/50 dark:bg-slate-800/50 p-1.5 rounded-xl glass border-none"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.55, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+          >
             {filters.map((cat) => (
-              <button 
+              <button
                 key={cat.value}
                 onClick={() => setFilter(cat.value)}
                 className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 ${filter === cat.value ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/30 scale-105' : 'dark:text-slate-400 text-slate-500 hover:text-primary-500 dark:hover:text-white'}`}
@@ -75,52 +148,80 @@ const Projects: React.FC = () => {
                 {cat.label}
               </button>
             ))}
-          </div>
+          </motion.div>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProjects.map((project, idx) => (
-            <div 
-              key={project.id} 
-              className="reveal group relative glass rounded-3xl overflow-hidden transform transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl hover:shadow-primary-500/20 dark:hover:shadow-primary-500/10"
-              style={{ transitionDelay: `${idx * 100}ms` }}
-            >
-              {/* Image Container with Placeholder */}
-              <div className="aspect-video overflow-hidden relative img-placeholder">
-                <img 
-                  src={project.imageUrl} 
-                  alt={project.title} 
-                  loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-1 opacity-0 transition-opacity duration-500" 
-                  onLoad={(e) => (e.currentTarget.classList.remove('opacity-0'), e.currentTarget.parentElement?.classList.remove('img-placeholder'))}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-dark/80 via-dark/20 to-transparent opacity-60 dark:opacity-80 transition-opacity group-hover:opacity-40"></div>
-                <div className="absolute top-4 right-4 transform transition-transform group-hover:scale-110 duration-300">
-                  <span className="px-3 py-1 rounded-full bg-primary-600/90 text-white text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">
-                    {project.category}
-                  </span>
-                </div>
-              </div>
-              
-              <div className="p-8 space-y-4">
-                <h3 className="text-2xl font-bold dark:text-white text-dark group-hover:text-primary-500 transition-colors duration-300">{project.title}</h3>
-                <p className="dark:text-slate-400 text-slate-600 text-sm line-clamp-2 leading-relaxed">
-                  {project.description}
-                </p>
-                
-                <div className="flex flex-wrap gap-2 pt-2">
-                  {project.stack.map(tag => (
-                    <span key={tag} className="text-[10px] font-mono dark:text-slate-500 text-slate-600 dark:bg-slate-800 bg-slate-200 px-2 py-0.5 rounded border dark:border-slate-700 border-slate-300 transition-colors group-hover:border-primary-500/30">
-                      #{tag}
+        <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <AnimatePresence mode="popLayout">
+            {filteredProjects.map((project, idx) => (
+              <motion.div
+                key={project.id}
+                layout
+                initial={{ opacity: 0, y: 24, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -16, scale: 0.96 }}
+                transition={{ duration: 0.45, delay: idx * 0.04, ease: [0.16, 1, 0.3, 1] }}
+                className="group relative glass rounded-3xl overflow-hidden transform transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl hover:shadow-primary-500/20 dark:hover:shadow-primary-500/10"
+              >
+                <div className="aspect-video overflow-hidden relative img-placeholder">
+                  <img
+                    src={getCurrentImage(project)}
+                    alt={project.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-1 opacity-0 transition-opacity duration-500"
+                    onLoad={(e) => (e.currentTarget.classList.remove('opacity-0'), e.currentTarget.parentElement?.classList.remove('img-placeholder'))}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-dark/80 via-dark/20 to-transparent opacity-60 dark:opacity-80 transition-opacity group-hover:opacity-40"></div>
+                  <div className="absolute top-4 right-4 transform transition-transform group-hover:scale-110 duration-300">
+                    <span className="px-3 py-1 rounded-full bg-primary-600/90 text-white text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">
+                      {project.category}
                     </span>
-                  ))}
+                  </div>
+                  {getProjectImages(project).length > 1 && (
+                    <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+                      <button
+                        type="button"
+                        onClick={() => shiftImage(project.id, getProjectImages(project).length, -1)}
+                        className="w-9 h-9 rounded-full bg-dark/60 text-white hover:bg-dark/80 transition-colors backdrop-blur-sm"
+                        aria-label="Image precedente"
+                      >
+                        <i className="fa-solid fa-chevron-left"></i>
+                      </button>
+                      <span className="px-2 py-1 text-[10px] rounded-full bg-dark/60 text-white font-mono backdrop-blur-sm">
+                        {(activeImageByProject[project.id] ?? 0) + 1}/{getProjectImages(project).length}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => shiftImage(project.id, getProjectImages(project).length, 1)}
+                        className="w-9 h-9 rounded-full bg-dark/60 text-white hover:bg-dark/80 transition-colors backdrop-blur-sm"
+                        aria-label="Image suivante"
+                      >
+                        <i className="fa-solid fa-chevron-right"></i>
+                      </button>
+                    </div>
+                  )}
                 </div>
 
-                {renderButtons(project)}
-              </div>
-            </div>
-          ))}
-        </div>
+                <div className="p-8 space-y-4">
+                  <h3 className="text-2xl font-bold dark:text-white text-dark group-hover:text-primary-500 transition-colors duration-300">{project.title}</h3>
+                  <p className="dark:text-slate-400 text-slate-600 text-sm line-clamp-2 leading-relaxed">
+                    {project.description}
+                  </p>
+
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    {project.stack.map((tag) => (
+                      <span key={tag} className="text-[10px] font-mono dark:text-slate-500 text-slate-600 dark:bg-slate-800 bg-slate-200 px-2 py-0.5 rounded border dark:border-slate-700 border-slate-300 transition-colors group-hover:border-primary-500/30">
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  {renderButtons(project)}
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
       </div>
     </section>
   );

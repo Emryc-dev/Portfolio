@@ -21,23 +21,30 @@ const Skills: React.FC = () => {
                 {cat}
               </h3>
               <div className="space-y-4">
-                {SKILLS.filter(s => s.category === cat).map((skill, skillIdx) => (
-                  <div key={skill.name} className="reveal glass p-4 rounded-xl hover:bg-white/5 transition-all group" style={{ transitionDelay: `${(catIdx * 100) + (skillIdx * 50)}ms` }}>
+                {SKILLS.filter(s => s.category === cat).map((skill, skillIdx) => {
+                  const normalizedLevel = Math.max(0, Math.min(skill.level, 100));
+                  return (
+                    <div key={skill.name} className="reveal glass p-4 rounded-xl hover:bg-white/5 transition-all group" style={{ transitionDelay: `${(catIdx * 100) + (skillIdx * 50)}ms` }}>
                     <div className="flex justify-between items-center mb-2">
                       <div className="flex items-center">
                         <i className={`${skill.icon} mr-3 text-xl dark:text-slate-300 text-slate-600 transition-colors group-hover:text-primary-500`}></i>
                         <span className="font-semibold">{skill.name}</span>
                       </div>
-                      <span className="text-xs font-mono text-slate-500">{skill.level}%</span>
+                      <span className="text-xs font-mono text-slate-500">{normalizedLevel}%</span>
                     </div>
                     <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-gradient-to-r from-primary-600 to-secondary transition-all duration-1000 group-hover:opacity-80" 
-                        style={{ width: `${skill.level}%` }}
+                      <div
+                        className="h-full bg-gradient-to-r from-primary-600 to-secondary transition-all duration-1000 group-hover:opacity-80"
+                        style={{ width: `${normalizedLevel}%` }}
+                        role="progressbar"
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-valuenow={normalizedLevel}
                       ></div>
                     </div>
-                  </div>
-                ))}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           ))}

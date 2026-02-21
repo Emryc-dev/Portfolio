@@ -5,6 +5,7 @@ export interface Project {
   longDescription?: string;
   stack: string[];
   imageUrl: string;
+  galleryUrls?: string[];
   liveUrl: string;
   githubUrl?: string;
   category: 'FullStack' | 'Frontend' | 'Backend' | 'Others';

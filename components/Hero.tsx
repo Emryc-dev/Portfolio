@@ -16,7 +16,7 @@ const Hero: React.FC = () => {
           </h1>
           
           <p className="reveal text-lg md:text-xl text-slate-400 max-w-lg leading-relaxed [transition-delay:200ms]">
-            Moi c'est <span className="text-white font-semibold">Emeryc Djomo</span>, développeur Full Stack Junior passionné par la création d'expériences numériques performantes et scalables.
+            Moi c'est <span className="text-white font-semibold">Emeryc Djomo</span>, développeur Full Stack Junior passionné par la création de solutions digitales performantes et scalables.
           </p>
           
           <div className="reveal flex flex-wrap gap-4 [transition-delay:300ms]">
