@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,9 +32,13 @@ const Navbar: React.FC = () => {
     }
   };
 
+  const toggleMobile = () => {
+    setMobileOpen((open) => !open);
+  };
+
   const navLinks = [
-    { name: 'À propos', href: '#about' },
-    { name: 'Compétences', href: '#skills' },
+    { name: 'Ã€ propos', href: '#about' },
+    { name: 'CompÃ©tences', href: '#skills' },
     { name: 'Projets', href: '#projects' },
     { name: 'Services', href: '#services' },
     { name: 'Contact', href: '#contact' },
@@ -82,12 +86,54 @@ const Navbar: React.FC = () => {
         </div>
 
         <div className="md:hidden flex items-center space-x-4">
-            <button onClick={toggleTheme} className="p-2 rounded-lg glass">
-                {theme === 'dark' ? '☀️' : '🌙'}
-            </button>
-            <button className="dark:text-slate-200 text-slate-800">
-                <i className="fa-solid fa-bars text-xl"></i>
-            </button>
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-lg glass"
+            aria-label="Toggle Theme"
+          >
+            {theme === 'dark' ? (
+              <i className="fa-solid fa-sun text-yellow-400"></i>
+            ) : (
+              <i className="fa-solid fa-moon text-slate-700"></i>
+            )}
+          </button>
+          <button
+            className="dark:text-slate-200 text-slate-800"
+            onClick={toggleMobile}
+            aria-label="Toggle Menu"
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
+          >
+            <i className={`fa-solid ${mobileOpen ? 'fa-xmark' : 'fa-bars'} text-xl`}></i>
+          </button>
+        </div>
+      </div>
+
+      <div
+        id="mobile-menu"
+        className={`md:hidden overflow-hidden transition-[max-height,opacity] duration-300 ${mobileOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
+      >
+        <div className="container mx-auto px-6 pb-6">
+          <div className="flex flex-col gap-4 rounded-2xl glass p-4">
+            {navLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                className="text-sm font-medium dark:text-slate-300 dark:hover:text-primary-500 text-slate-600 hover:text-primary-600 transition-colors uppercase tracking-widest"
+                onClick={() => setMobileOpen(false)}
+              >
+                {link.name}
+              </a>
+            ))}
+
+            <a
+              href="#contact"
+              className="mt-2 px-5 py-2 rounded-full bg-primary-600 hover:bg-primary-700 text-white text-sm font-bold transition-all shadow-lg shadow-primary-500/20 active:scale-95 text-center"
+              onClick={() => setMobileOpen(false)}
+            >
+              Hire Me
+            </a>
+          </div>
         </div>
       </div>
     </nav>

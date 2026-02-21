@@ -2,11 +2,19 @@ import React, { useState } from 'react';
 import { PROJECTS } from '../constants';
 
 const Projects: React.FC = () => {
-  const [filter, setFilter] = useState('Tous');
+  const filters = [
+    { label: 'Tous', value: 'all' },
+    { label: 'FullStack', value: 'FullStack' },
+    { label: 'Frontend', value: 'Frontend' },
+    { label: 'Autres', value: 'Others' },
+  ] as const;
 
-  const filteredProjects = filter === 'Tous' 
-    ? PROJECTS 
-    : PROJECTS.filter(p => p.category.toLowerCase() === filter.toLowerCase());
+  type FilterValue = typeof filters[number]['value'];
+  const [filter, setFilter] = useState<FilterValue>('all');
+
+  const filteredProjects = filter === 'all'
+    ? PROJECTS
+    : PROJECTS.filter((p) => p.category.trim().toLowerCase() === filter.toLowerCase());
 
   const renderButtons = (project: typeof PROJECTS[0]) => {
     // Special case for CreatorOS - Coming Soon
@@ -58,13 +66,13 @@ const Projects: React.FC = () => {
             <p className="dark:text-slate-400 text-slate-600 max-w-xl">Sélection de réalisations mettant en avant mes capacités d'analyse et de développement Full Stack.</p>
           </div>
           <div className="reveal flex space-x-2 bg-slate-200/50 dark:bg-slate-800/50 p-1.5 rounded-xl glass border-none [transition-delay:100ms]">
-            {['Tous', 'FullStack', 'Frontend'].map((cat) => (
+            {filters.map((cat) => (
               <button 
-                key={cat}
-                onClick={() => setFilter(cat)}
-                className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 ${filter === cat ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/30 scale-105' : 'dark:text-slate-400 text-slate-500 hover:text-primary-500 dark:hover:text-white'}`}
+                key={cat.value}
+                onClick={() => setFilter(cat.value)}
+                className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 ${filter === cat.value ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/30 scale-105' : 'dark:text-slate-400 text-slate-500 hover:text-primary-500 dark:hover:text-white'}`}
               >
-                {cat}
+                {cat.label}
               </button>
             ))}
           </div>

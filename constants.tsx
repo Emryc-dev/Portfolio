@@ -9,7 +9,7 @@ export const PROJECTS: Project[] = [
     longDescription: 'SwiftLink est une solution complète mettant l\'accent sur une architecture REST propre.',
     stack: ['Node.js', 'Express', 'REST API', 'Architecture MVC', 'PostgreSQL'],
     imageUrl: '/images/SwiftLink - Logistics & Delivery Management - Google Chrome 19_02_2026 21_32_00.png',
-    liveUrl: '#',
+    liveUrl: 'https://swiftlink-saas.vercel.app/',
     githubUrl: 'https://github.com/Made-Easy-Tech-MET/swiftlink-saas',
     category: 'FullStack'
   },
