@@ -1,0 +1,159 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital,wght@1,400&display=swap');
+@import "tailwindcss";
+
+:root {
+  --bg: 0 0% 4%;
+  --surface: 0 0% 8%;
+  --text: 0 0% 96%;
+  --muted: 0 0% 53%;
+  --stroke: 0 0% 12%;
+  --accent: 0 0% 96%;
+}
+
+@theme {
+  --font-body: "Inter", sans-serif;
+  --font-display: "Instrument Serif", serif;
+
+  --color-bg: hsl(var(--bg));
+  --color-surface: hsl(var(--surface));
+  --color-text-primary: hsl(var(--text));
+  --color-muted: hsl(var(--muted));
+  --color-stroke: hsl(var(--stroke));
+}
+
+@layer base {
+  body {
+    background-color: hsl(var(--bg));
+    color: hsl(var(--text));
+    font-family: "Inter", sans-serif;
+    overflow-x: hidden;
+  }
+}
+
+/* Accent Gradient Utilities */
+.accent-gradient {
+  background: linear-gradient(90deg, #89AACC 0%, #4E85BF 100%);
+}
+
+.accent-gradient-text {
+  background: linear-gradient(90deg, #89AACC 0%, #4E85BF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.accent-border-hover {
+  position: relative;
+  transition: border-color 0.3s ease;
+}
+
+.accent-border-hover::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(90deg, #89AACC 0%, #4E85BF 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.accent-border-hover:hover::before {
+  opacity: 1;
+}
+
+/* Animations */
+@keyframes scroll-down {
+  0% {
+    transform: translateY(-100%);
+  }
+  15% {
+    transform: translateY(-100%);
+  }
+  85% {
+    transform: translateY(200%);
+  }
+  100% {
+    transform: translateY(200%);
+  }
+}
+
+@keyframes role-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes spotlight {
+  0% {
+    opacity: 0;
+    transform: translate(-72%, -62%) scale(0.75);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-38%, -28%) scale(1);
+  }
+}
+
+@keyframes spline-loader {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-scroll-down {
+  animation: scroll-down 1.5s ease-in-out infinite;
+}
+
+.animate-spotlight {
+  animation: spotlight 2s ease 0.35s 1 forwards;
+}
+
+.spline-loader {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid rgb(255 255 255 / 16%);
+  border-top-color: #89aacc;
+  border-radius: 9999px;
+  animation: spline-loader 0.8s linear infinite;
+}
+
+.animate-role-fade-in {
+  animation: role-fade-in 0.4s ease-out forwards;
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+}
+
+/* Custom Utilities */
+.halftone-overlay {
+  background-image: radial-gradient(circle, #000 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}

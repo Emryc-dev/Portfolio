@@ -1,0 +1,6 @@
+{
+  "name": "Dark Portfolio",
+  "description": "Single-page dark portfolio landing page for Emryc Djomo, built with React, GSAP, Framer Motion, and hls.js.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
